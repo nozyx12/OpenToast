@@ -5,29 +5,58 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * A ToastModifier implementation that animates toast notifications with a swipe effect.
+ * The notification swipes in from the right when displayed and swipes out to the right when closed.
+ */
 public class SwipeToastModifier implements ToastModifier {
     private final int swipeSpeed;
 
+    /**
+     * Constructs a SwipeToastModifier with a specified swipe speed.
+     *
+     * @param swipeSpeed The speed of the swipe animation in milliseconds.
+     */
     public SwipeToastModifier(int swipeSpeed) {
         this.swipeSpeed = swipeSpeed;
     }
 
+    /**
+     * Constructs a SwipeToastModifier with a default swipe speed of 200 milliseconds.
+     */
     public SwipeToastModifier() {
         this(200);
     }
 
+    /**
+     * Called when the toast notification is displayed.
+     * This method triggers the swipe-in animation.
+     *
+     * @param panel The JPanel representing the content of the toast notification.
+     */
     @Override
     public void onDisplay(JPanel panel) {
         JDialog dialog = (JDialog) SwingUtilities.getWindowAncestor(panel);
-        animateSwipeIn(dialog);
+        this.animateSwipeIn(dialog);
     }
 
+    /**
+     * Called when the toast notification is closing.
+     * This method triggers the swipe-out animation.
+     *
+     * @param panel The JPanel representing the content of the toast notification.
+     */
     @Override
     public void onClose(JPanel panel) {
         JDialog dialog = (JDialog) SwingUtilities.getWindowAncestor(panel);
-        animateSwipeOut(dialog);
+        this.animateSwipeOut(dialog);
     }
 
+    /**
+     * Animates the swipe-in effect for the toast notification.
+     *
+     * @param dialog The JDialog representing the toast notification.
+     */
     private void animateSwipeIn(JDialog dialog) {
         Rectangle screenBounds = dialog.getGraphicsConfiguration().getBounds();
         int startX = screenBounds.width;
@@ -52,6 +81,11 @@ public class SwipeToastModifier implements ToastModifier {
         timer.start();
     }
 
+    /**
+     * Animates the swipe-out effect for the toast notification.
+     *
+     * @param dialog The JDialog representing the toast notification.
+     */
     private void animateSwipeOut(JDialog dialog) {
         Rectangle screenBounds = dialog.getGraphicsConfiguration().getBounds();
         int startX = dialog.getX();

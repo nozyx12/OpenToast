@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * Represents a toast notification that can be displayed on the screen.
+ * The notification has a customizable appearance and can automatically close after a specified duration.
+ */
 public class ToastNotification {
     private final int autoClose = 5000;
 
@@ -21,6 +25,15 @@ public class ToastNotification {
     private static final int MARGIN = 10;
     private final List<ToastModifier> modifiers;
 
+    /**
+     * Constructs a new ToastNotification instance.
+     *
+     * @param title     The title of the notification.
+     * @param message   The message to be displayed in the notification.
+     * @param icon      An icon to display alongside the message. Can be null.
+     * @param style     The style configuration for the notification.
+     * @param modifiers A list of modifiers to customize the notification behavior. Can be null.
+     */
     public ToastNotification(String title, String message, Icon icon, ToastStyle style, List<ToastModifier> modifiers) {
         this.latch = new CountDownLatch(1);
 
@@ -34,20 +47,37 @@ public class ToastNotification {
         this.dialog.setAlwaysOnTop(true);
     }
 
+    /**
+     * Displays the toast notification with a fade-in effect.
+     */
     public void display() {
         this.fadeIn();
     }
 
+    /**
+     * Closes the toast notification with a fade-out effect.
+     */
     public void close() {
         this.fadeOut();
     }
 
+    /**
+     * Blocks the current thread until the notification is closed.
+     */
     public void waitFor() {
         try {
             this.latch.await();
         } catch (InterruptedException ignored) {}
     }
 
+    /**
+     * Creates the JDialog for the toast notification.
+     *
+     * @param title   The title of the notification.
+     * @param message The message to be displayed in the notification.
+     * @param icon    An icon to display alongside the message. Can be null.
+     * @return The created JDialog for the notification.
+     */
     private JDialog createDialog(String title, String message, Icon icon) {
         JDialog dialog = new JDialog();
         dialog.setUndecorated(true);
@@ -95,6 +125,11 @@ public class ToastNotification {
         return dialog;
     }
 
+    /**
+     * Sets the position of the notification on the screen.
+     * The notification will appear in the bottom right corner of the screen.
+     * If there is not enough space, a ToastStackOverflowException will be thrown.
+     */
     private void setPosition() {
         GraphicsConfiguration config = this.dialog.getGraphicsConfiguration();
         Rectangle screenBounds = config.getBounds();
@@ -116,6 +151,10 @@ public class ToastNotification {
         activeNotifications.add(this.dialog);
     }
 
+    /**
+     * Fades in the notification, making it visible.
+     * The notification will also start a timer for automatic closing after a predefined duration.
+     */
     private void fadeIn() {
         this.dialog.setVisible(true);
 
@@ -148,6 +187,10 @@ public class ToastNotification {
         } catch (InterruptedException ignored) {}
     }
 
+    /**
+     * Fades out the notification, making it invisible.
+     * The notification is disposed of after fading out.
+     */
     private void fadeOut() {
         JPanel panel = (JPanel) this.dialog.getContentPane();
         for (ToastModifier modifier : this.modifiers) modifier.onClose(panel);
@@ -173,15 +216,28 @@ public class ToastNotification {
         }).start();
     }
 
+    /**
+     * A custom JPanel that paints a rounded background for the toast notification.
+     */
     private static class RoundedPane extends JPanel {
         private final ToastStyle style;
 
+        /**
+         * Constructs a new RoundedPane with the specified style.
+         *
+         * @param style The style configuration for the pane.
+         */
         public RoundedPane(ToastStyle style) {
             this.style = style;
             this.setOpaque(false);
             this.setLayout(new BorderLayout());
         }
 
+        /**
+         * Paints the component with a rounded rectangle background.
+         *
+         * @param g The graphics context to use for painting.
+         */
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();

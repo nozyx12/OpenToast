@@ -1,0 +1,30 @@
+plugins {
+    id "java-library"
+}
+
+group = "io.github.nozyx12"
+version = "1.0"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {}
+
+jar {
+    archiveBaseName = archiveBaseName.get().toLowerCase()
+
+    compileJava.options.encoding = "UTF-8"
+}
+
+tasks.register("generateSourcesJar", Jar) {
+    archiveClassifier.set("sources")
+    from sourceSets.main.allSource
+    archiveBaseName = archiveBaseName.get().toLowerCase()
+}
+
+tasks.register("generateJavadocJar", Jar) {
+    archiveClassifier.set("javadoc")
+    from javadoc
+    archiveBaseName = archiveBaseName.get().toLowerCase()
+}
